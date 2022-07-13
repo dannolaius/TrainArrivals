@@ -79,9 +79,7 @@ const arrivalsBody = `<REQUEST>
  * runs getarrivals when selected station is updated.
  */
   useEffect(() => {
-      getArrival()
-  }, [selectedStation])
-/**
+    /**
  * Gets arrivals for the station you last clicked
  */
   const getArrival = async () => {
@@ -96,6 +94,9 @@ const arrivalsBody = `<REQUEST>
         //console.log(result.data.RESPONSE.RESULT[0].TrainAnnouncement)
         setCurrentArrivals(result.data.RESPONSE.RESULT[0].TrainAnnouncement) 
   }
+      getArrival()
+  }, [selectedStation])
+
   
   useEffect(()=> {
   
@@ -119,12 +120,6 @@ const arrivalsBody = `<REQUEST>
       //console.log(result.data.RESPONSE.RESULT[0].TrainStation)
       setAllStations(result.data.RESPONSE.RESULT[0].TrainStation)
     }
-    
-    
-
-
-
-
 
     fetchStations()
   }, [])
