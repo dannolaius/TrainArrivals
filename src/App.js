@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Header from './components/Header'
 import SearchBar from './components/SearchBar';
 import axios from "axios"
-import { Component, useEffect, useState } from 'react';
+import { Component, useEffect, useState, useRef } from 'react';
 import ArrivalCard from './components/ArrivalCard';
 
 
@@ -14,22 +14,25 @@ function App() {
   const [allStations, setAllStations] = useState([])
   const [selectedStation, setSelectedStation] = useState([])
   const [currentArrivals, setCurrentArrivals] = useState([])
-  const auth = "46aeb6e7125e4103ae3d123047f24a9f"
+  const stationListRef = useRef(null)
+  const inputRef = useRef(null)
+ 
+  // The body for request to get station
   const stationBody = `<REQUEST>
-  <LOGIN authenticationkey="${auth}" />
+  <LOGIN authenticationkey="${process.env.REACT_APP_API}" />
   <QUERY objecttype="TrainStation" schemaversion="1">
             <FILTER>
                   <EQ name="Advertised" value="true" />
-                  <EQ name="CountryCode" value="SE" />
             </FILTER>
             <INCLUDE>LocationSignature</INCLUDE>
             <INCLUDE>AdvertisedLocationName</INCLUDE>
       </QUERY>
 </REQUEST>`
 
+//The body for request to get arrivals for a station
 const arrivalsBody = `<REQUEST>
-  <LOGIN authenticationkey="${auth}" />
-  <QUERY objecttype="TrainAnnouncement" schemaversion="1.6" orderby="AdvertisedTimeAtLocation" limit="10">
+  <LOGIN authenticationkey="${process.env.REACT_APP_API}" />
+  <QUERY objecttype="TrainAnnouncement" schemaversion="1.6" orderby="AdvertisedTimeAtLocation" limit="5">
     <FILTER>
       <AND>
         <EQ name="ActivityType" value="Avgang" />
@@ -45,6 +48,7 @@ const arrivalsBody = `<REQUEST>
     <INCLUDE>AdvertisedTimeAtLocation</INCLUDE>
     <INCLUDE>FromLocation</INCLUDE>
     <INCLUDE>ToLocation</INCLUDE>
+    <INCLUDE>ActivityId</INCLUDE>
   </QUERY>
 </REQUEST>`
 
@@ -70,8 +74,13 @@ const arrivalsBody = `<REQUEST>
       //console.log(station)
       setSelectedStation(station)
       // console.log(station)
-      getArrival()
     }
+/**
+ * runs getarrivals when selected station is updated.
+ */
+  useEffect(() => {
+      getArrival()
+  }, [selectedStation])
 /**
  * Gets arrivals for the station you last clicked
  */
@@ -83,11 +92,21 @@ const arrivalsBody = `<REQUEST>
           }
         }
         )
-        console.log(result.data.RESPONSE.RESULT[0].TrainAnnouncement)
+        //console.log(arrivalsBody)
+        //console.log(result.data.RESPONSE.RESULT[0].TrainAnnouncement)
         setCurrentArrivals(result.data.RESPONSE.RESULT[0].TrainAnnouncement) 
   }
   
   useEffect(()=> {
+  
+    document.addEventListener('click', (e) => {
+      stationListRef.current.style.display="none"
+    })
+    inputRef.current.addEventListener('click', (e) => {
+      stationListRef.current.style.display='flex'
+      e.stopPropagation()
+    })
+
     const fetchStations = async () => {
       const result = await axios.post(
         `https://api.trafikinfo.trafikverket.se/v2/data.json`, stationBody,{
@@ -100,18 +119,28 @@ const arrivalsBody = `<REQUEST>
       //console.log(result.data.RESPONSE.RESULT[0].TrainStation)
       setAllStations(result.data.RESPONSE.RESULT[0].TrainStation)
     }
+    
+    
+
+
+
+
 
     fetchStations()
   }, [])
 
   return (
     <div className="row">
+      <Header />
       <div className="left-panel">
-        <Header />
-        <SearchBar displayedStations={displayedStations} typeInSearch={typeInSearch} clickStation={clickStation}/>
+        <SearchBar 
+          displayedStations={displayedStations} 
+          typeInSearch={typeInSearch} clickStation={clickStation}
+          stationListRef={stationListRef} 
+          inputRef={inputRef}/>
       </div>
       <div className="right-panel">
-      <ArrivalCard selectedStation={selectedStation} currentArrivals={currentArrivals}/>    
+      <ArrivalCard selectedStation={selectedStation} currentArrivals={currentArrivals} allStations={allStations}/>    
       </div>
     </div>
   );
