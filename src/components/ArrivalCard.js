@@ -23,12 +23,11 @@ export default function ArrivalCard({ selectedStation, currentArrivals, allStati
         to = allStations.filter((station) => station.LocationSignature == arrival.ToLocation[0].LocationName)[0].AdvertisedLocationName
       }
       return(
-        <div className="card center" key={arrival.ActivityId} style={{width: '18rem', 
-                                             margin:'4rem'}}>
+        <div className="card" key={arrival.ActivityId} style={{flex: 5}}>
           <div className="card-body">
             <h5 className="card-title">Ankommer {time} </h5>
             <p className="card-text">Från {from}</p>
-            <p className='card-text'>Till {to}</p>
+            <p className="card-text">Till {to}</p>
 
           </div>
         </div>
