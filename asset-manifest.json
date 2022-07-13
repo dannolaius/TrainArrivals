@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/TrainArrivals/static/css/main.36753da9.css",
+    "main.js": "/TrainArrivals/static/js/main.a26cb4f1.js",
+    "static/js/787.ac34fb11.chunk.js": "/TrainArrivals/static/js/787.ac34fb11.chunk.js",
+    "index.html": "/TrainArrivals/index.html",
+    "main.36753da9.css.map": "/TrainArrivals/static/css/main.36753da9.css.map",
+    "main.a26cb4f1.js.map": "/TrainArrivals/static/js/main.a26cb4f1.js.map",
+    "787.ac34fb11.chunk.js.map": "/TrainArrivals/static/js/787.ac34fb11.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.36753da9.css",
+    "static/js/main.a26cb4f1.js"
+  ]
+}
